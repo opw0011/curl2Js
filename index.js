@@ -1,11 +1,11 @@
 const CURL_PREFIX = 'curl ';
 const SPLIT_REGEX = /\s*(?:([^\s\\\'\"]+)|'((?:[^\'\\]|\\.)*)'|"((?:[^\"\\]|\\.)*)"|(\\.?)|(\S))(\s|$)?/g;
 const KEY_VALUE_REGEX = /^['|"]?(\S*)\:\s?((?:[^\\\'\"])*)['|"]?$/;
+const URL_REGEX = /https?:\/\/\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*/;
 
 module.exports = exports.default = (raw) => {
   // TODO: pre-process string to unify the input
   const result = parseCurl(raw);
-
   return result;
 }
 
@@ -17,37 +17,36 @@ const parseCurl = (s) => {
   const str = preProcess(s);
   if(!str.startsWith(CURL_PREFIX)) throw 'invalid curl string';
 
-  match = str.match(SPLIT_REGEX);
-  const [curl, url, ...args] = match;
+  const match = str.match(SPLIT_REGEX);
+  const [curl, ...args] = match;
 
-  let request = {};
-  Object.assign(request, {
-      url: url,
-  });
-
-  match.forEach(arg => console.log(arg));
+  args.forEach(arg => console.log(arg));
 
   const opts = new OptionsBuilder();
 
-  for(let i = 0; i < match.length; i++) {
-    const key = match[i];
-    const value = (i + 1) < match.length ? match[i+1] : null;
+  for(let i = 0; i < args.length; i++) {
+    const key = args[i];
+    const value = (i + 1) < args.length ? args[i+1] : null;
     if (key && key.startsWith('-')) {
       opts.add(key, value);
+      i++;
+    } else if(key.match(URL_REGEX)){
+      opts.add('URL', key);
     }
   }
 
   const requestOptions = opts.build();
-
   console.log(requestOptions);
   
-  return {...request, ...requestOptions};
+  return requestOptions;
 }
 
 class OptionsBuilder {
   constructor() {
     this.headers = {};
-    this.method = '';
+    this.method = 'GET';
+    this.body = '';
+    this.url = '';
   }
 
   add(type, value) {
@@ -58,6 +57,15 @@ class OptionsBuilder {
       case '-H':
       case '--header':
         this.headers = {...this.headers, ...this.parseKeyValue(rValue)};
+        break;
+      case '-X':
+        this.method = rValue;
+        break;
+      case '-d':
+        this.body = rValue;
+        break;
+      case 'URL':
+        this.url = rValue;
         break;
       // TODO: handle other types
       default:
@@ -76,6 +84,9 @@ class OptionsBuilder {
   build() {
     return {
       headers: this.headers,
+      method: this.method,
+      body: this.body,
+      url: this.url,
     };
   }
 }
