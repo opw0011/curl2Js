@@ -9,12 +9,9 @@ module.exports = exports.default = (raw) => {
   return result;
 }
 
-const preProcess = (str) => {
-    return str.trim();
-}
 
 const parseCurl = (s) => {
-  const str = preProcess(s);
+  const str = s.trim();
   if(!str.startsWith(CURL_PREFIX)) throw 'invalid curl string';
 
   const match = str.match(SPLIT_REGEX);
@@ -45,8 +42,8 @@ class OptionsBuilder {
   constructor() {
     this.headers = {};
     this.method = 'GET';
-    this.body = '';
-    this.url = '';
+    this.body = undefined;
+    this.url = undefined;
   }
 
   add(type, value) {
@@ -59,13 +56,15 @@ class OptionsBuilder {
         this.headers = {...this.headers, ...this.parseKeyValue(rValue)};
         break;
       case '-X':
+      case '--request':
         this.method = rValue;
         break;
       case '-d':
-        this.body = rValue;
+      case '--data':
+        this.body = this.removeStringQuote(rValue);
         break;
       case 'URL':
-        this.url = rValue;
+        this.url = this.removeStringQuote(rValue);
         break;
       // TODO: handle other types
       default:
@@ -81,12 +80,23 @@ class OptionsBuilder {
     }
   }
 
+  removeStringQuote(str) {
+    let s = str;
+    if(str.startsWith('\'') || str.startsWith('"')) {
+      s = s.slice(1);
+    }
+    if(str.endsWith('\'') || str.endsWith('"')) {
+      s = s.slice(0, -1);
+    }
+    return s;
+  }
+
   build() {
-    return {
+    return JSON.parse(JSON.stringify({
       headers: this.headers,
       method: this.method,
       body: this.body,
       url: this.url,
-    };
+    }));
   }
 }
