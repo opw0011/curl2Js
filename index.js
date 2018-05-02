@@ -34,7 +34,7 @@ const parseCurl = (s) => {
 
   const requestOptions = opts.build();
   console.log(requestOptions);
-  
+
   return requestOptions;
 }
 
@@ -76,7 +76,7 @@ class OptionsBuilder {
     const match = kv.match(KEY_VALUE_REGEX);
     if (!match) return null;
     return {
-      [match[1]]: match[2], 
+      [match[1]]: match[2],
     }
   }
 
