@@ -1,7 +1,6 @@
 const CURL_PREFIX = 'curl ';
 const SPLIT_REGEX = /\s*(?:([^\s\\\'\"]+)|'((?:[^\'\\]|\\.)*)'|"((?:[^\"\\]|\\.)*)"|(\\.?)|(\S))(\s|$)?/g;
 const KEY_VALUE_REGEX = /^['|"]?(\S*)\:\s?((?:[^\\\'\"])*)['|"]?$/;
-const URL_REGEX = /https?:\/\/\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*/;
 
 module.exports = exports.default = (raw) => {
   // TODO: pre-process string to unify the input
@@ -15,11 +14,12 @@ const parseCurl = (s) => {
   if(!str.startsWith(CURL_PREFIX)) throw 'invalid curl string';
 
   const match = str.match(SPLIT_REGEX);
-  const [curl, ...args] = match;
+  const [curl, url, ...args] = match;
 
   args.forEach(arg => console.log(arg));
 
   const opts = new OptionsBuilder();
+  opts.add('URL', url);
 
   for(let i = 0; i < args.length; i++) {
     const key = args[i];
@@ -27,8 +27,6 @@ const parseCurl = (s) => {
     if (key && key.startsWith('-')) {
       opts.add(key, value);
       i++;
-    } else if(key.match(URL_REGEX)){
-      opts.add('URL', key);
     }
   }
 
