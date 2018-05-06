@@ -1,6 +1,7 @@
 const CURL_PREFIX = 'curl ';
 const SPLIT_REGEX = /\s*(?:([^\s\\\'\"]+)|'((?:[^\'\\]|\\.)*)'|"((?:[^\"\\]|\\.)*)"|(\\.?)|(\S))(\s|$)?/g;
 const KEY_VALUE_REGEX = /^['|"]?(\S*)\:\s?((?:[^\\\'\"])*)['|"]?$/;
+const DEFAULT_POST_CONTENT_TYPE = 'application/x-www-form-urlencoded';
 
 module.exports = exports.default = (raw) => {
   // TODO: pre-process string to unify the input
@@ -8,18 +9,16 @@ module.exports = exports.default = (raw) => {
   return result;
 }
 
-
 const parseCurl = (s) => {
   const str = s.trim();
   if(!str.startsWith(CURL_PREFIX)) throw 'invalid curl string';
 
   const match = str.match(SPLIT_REGEX);
-  const [curl, url, ...args] = match;
+  const [curl, ...args] = match;
 
-  args.forEach(arg => console.log(arg));
+  // args.forEach(arg => console.log(arg));
 
   const opts = new OptionsBuilder();
-  opts.add('URL', url);
 
   for(let i = 0; i < args.length; i++) {
     const key = args[i];
@@ -27,11 +26,13 @@ const parseCurl = (s) => {
     if (key && key.startsWith('-')) {
       opts.add(key, value);
       i++;
+    } else {
+      opts.add('URL', key);
     }
   }
 
   const requestOptions = opts.build();
-  console.log(requestOptions);
+  // console.log(requestOptions);
 
   return requestOptions;
 }
@@ -55,11 +56,17 @@ class OptionsBuilder {
         break;
       case '-X':
       case '--request':
+        // TODO: validate the request method
         this.method = rValue;
         break;
       case '-d':
       case '--data':
         this.body = this.removeStringQuote(rValue);
+        if(!this.headers['Content-Type']) {
+          this.headers = { ...this.headers, ...{
+            'Content-Type': DEFAULT_POST_CONTENT_TYPE
+          }};
+        }
         break;
       case 'URL':
         this.url = this.removeStringQuote(rValue);
