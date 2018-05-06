@@ -1,4 +1,4 @@
-const curlToJs = require('./index');
+const curlToJs = require('./dist/bundle');
 
 const sample1 = "curl 'http://google.com/' \
 -H 'Accept-Encoding: gzip, deflate, sdch' \
