@@ -6,6 +6,6 @@ node_js:
   - "7"
   - "6"
 install:
-  - npm install -g jest codecov
+  - npm install -g jest codecov babel-jest babel-core
 script:
   - jest && codecov
