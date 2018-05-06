@@ -1,4 +1,4 @@
-const curlToJs = require('./dist/bundle');
+const curlToJs = require('./index');
 
 describe('GET request', () => {
   test('simple GET no quotes', () => {
