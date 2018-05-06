@@ -4,7 +4,7 @@
   "description": "A library to parse cURL to javascript",
   "main": "index.js",
   "scripts": {
-    "test": "npm run build && jest",
+    "test": "jest",
     "test-coverage": "jest --coverage",
     "start": "node example.js",
     "build": "webpack --mode production ./index.js"
@@ -22,6 +22,7 @@
     "webpack-cli": "^2.1.2"
   },
   "jest": {
+    "transform": {"^.+\\.jsx?$": "babel-jest"},
     "coverageDirectory": "./coverage/",
     "collectCoverage": true
   }
