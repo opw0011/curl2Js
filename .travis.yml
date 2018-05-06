@@ -8,4 +8,4 @@ node_js:
 install:
   - npm install -g jest codecov babel-jest babel-core
 script:
-  - jest && codecov
+  - jest --no-cache && codecov
