@@ -3,9 +3,9 @@
 [![codecov](https://img.shields.io/codecov/c/github/opw0011/curlJs.svg)](https://codecov.io/gh/opw0011/curlJs)
 
 
-# curlJs 
+# curl2js 
 
 [![NPM](https://nodei.co/npm/curl2js.png)](https://nodei.co/npm/curl2js/)
 
-curlJs is a nodejs library to convert cURL to javascript.
+curl2js is a nodejs library to convert cURL to javascript.
 
