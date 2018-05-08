@@ -4,5 +4,7 @@
 
 # curlJs 
 
+[![NPM](https://nodei.co/npm/curl2js.png)](https://nodei.co/npm/curl2js/)
+
 curlJs is a nodejs library to convert cURL to javascript.
 
