@@ -1,5 +1,6 @@
+[![npm version](https://img.shields.io/npm/v/curl2js.svg?style=flat)](https://www.npmjs.com/package/react)
 [![Build Status](https://travis-ci.org/opw0011/curlJs.svg?branch=master)](https://travis-ci.org/opw0011/curlJs)
-[![codecov](https://codecov.io/gh/opw0011/curlJs/branch/master/graph/badge.svg)](https://codecov.io/gh/opw0011/curlJs)
+[![codecov](https://img.shields.io/codecov/c/github/opw0011/curlJs.svg)](https://codecov.io/gh/opw0011/curlJs)
 
 
 # curlJs 
