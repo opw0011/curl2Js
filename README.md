@@ -9,3 +9,29 @@
 
 curl2js is a nodejs library to convert cURL to javascript.
 
+## Getting Started
+
+### Installation
+
+```
+npm install curl2js --save
+```
+
+### Sample Usage
+
+```js
+const curl2js = require('curl2js');
+
+const result = curl2js("curl google.com -H 'Accept: application/json' -H 'Content-Type: application/json'");
+console.log(result);
+
+// { 
+//    headers: { 
+//      Accept: 'application/json',
+//      'Content-Type': 'application/json' 
+//    },
+//    method: 'GET',
+//    url: 'google.com' 
+// }
+
+```
